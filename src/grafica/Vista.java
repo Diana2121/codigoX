@@ -1,0 +1,360 @@
+package grafica;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import javax.swing.JTextPane;
+
+import dijkstra.CalculoDistancia;
+import packGps.Mapa;
+import packGps.Observable;
+import packGps.Observador;
+import rutas.Ruta;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JRadioButton;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+
+/**
+ * Contiene todos los elementos de la parte gráfica.
+ * 
+ * @author Diana Espinoza.
+ *
+ */
+public class Vista implements Observable {
+
+	JFrame frameGps;
+	JRadioButton radioBotonMasCorto = new JRadioButton("Más corto");
+	JRadioButton radioBotonMasRapido = new JRadioButton("Más rápido");
+	private Observador observador;
+	private String eleccionDestino;
+	private String eleccionOrigen;
+
+	private static Vista instancia = new Vista();// Usamos Singleton.
+
+	/**
+	 * Devuelve una única instancia de la clase {@link Vista Vista}
+	 * @return instancia
+	 */
+	public static Vista getInstancia() {// Metodo delpatron singleton.
+		return instancia;
+	}
+
+	/**
+	 * Launch the application.
+	 * 
+	 */
+	private void crearVentana() {// Private para que no se generen más ventanas.
+		util.grafica.crearVentana();
+	}
+
+	/**
+	 * Constructor de la clase Vista.
+	 * 
+	 */
+	private Vista() {
+		initializar();
+	}
+
+	/**
+	 * Método que crea el frame con sus componentes.
+	 */
+	private void initializar() {
+		frameGps = new JFrame();
+		frameGps.setTitle("GPS Diana21");
+		frameGps.setBounds(0, 0, 663, 424);
+		frameGps.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frameGps.getContentPane().setLayout(null);
+		// frmGpsDiana.setVisible(true);
+
+		JPanel panelDeOpciones = agregarPanelOpciones();
+
+		agregarOrigen(panelDeOpciones);
+
+		JTextPane txtpnPuntoDiana = new JTextPane();
+		txtpnPuntoDiana.setBounds(15, 65, 91, 20);
+		txtpnPuntoDiana.setText("Punto Diana");
+		txtpnPuntoDiana.setEditable(false);
+		panelDeOpciones.add(txtpnPuntoDiana);
+
+		agregarBotonBuscar(panelDeOpciones);
+
+		JButton btnLimpiar = new JButton("Limpiar");
+		btnLimpiar.setBounds(41, 253, 65, 23);
+		panelDeOpciones.add(btnLimpiar);
+		btnLimpiar.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+
+			}
+		});
+
+		JCheckBox chckbxSoloPavimentada = new JCheckBox("Solo Pavimentada");
+		chckbxSoloPavimentada.setBounds(14, 196, 117, 23);
+		chckbxSoloPavimentada.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		});
+		panelDeOpciones.add(chckbxSoloPavimentada);
+		
+
+		JCheckBox chckbxConGnc = new JCheckBox("Con GNC");
+		chckbxConGnc.setBounds(14, 223, 97, 23);
+		panelDeOpciones.add(chckbxConGnc);
+
+		radioBotonMasRapido.setBounds(14, 130, 109, 23);
+
+		radioBotonMasRapido.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Vista.getInstancia().radioBotonMasCorto.setSelected(false);
+			}
+		});
+		panelDeOpciones.add(radioBotonMasRapido);
+		// Mandé la línea d declaración y creación arriba p asignar dependencia
+		// d botones.
+		radioBotonMasCorto.setBounds(14, 156, 109, 23);
+
+		radioBotonMasCorto.addActionListener(new ActionListener() {// Boton mas
+																	// corto
+																	// observa a
+																	// la
+																	// instancia
+																	// d
+																	// Practica2?
+
+			@Override
+			public void actionPerformed(ActionEvent e) {// Es el Actualizar,
+														// esta es una Clase
+														// Observadora.
+				Vista.getInstancia().radioBotonMasRapido.setSelected(false);
+			}
+		});
+		panelDeOpciones.add(radioBotonMasCorto);
+
+		JComboBox comboBoxOrigen = new JComboBox();
+		// comboBox.setModel(new DefaultComboBoxModel(new String[] {"Trelew"}));
+		for (int i = 0; i < Mapa.getInstancia().getListaPuntos().size(); i++) {
+			comboBoxOrigen.addItem(Mapa.getInstancia().getListaPuntos().get(i).getNombre());
+		}
+		comboBoxOrigen.addItemListener(new MiItemListenerOrigen(comboBoxOrigen));
+
+		comboBoxOrigen.setToolTipText("");
+		comboBoxOrigen.setBounds(14, 34, 117, 20);
+		panelDeOpciones.add(comboBoxOrigen);
+
+		// --------------------------------------------------------------------------
+		JComboBox comboBoxDestino = new JComboBox();
+
+		for (int i = 0; i < Mapa.getInstancia().getListaPuntos().size(); i++) {
+			comboBoxDestino.addItem(Mapa.getInstancia().getListaPuntos().get(i).getNombre());
+
+		}
+		comboBoxDestino.addItemListener(new MiItemListenerDestino(comboBoxDestino));
+		comboBoxDestino.setBounds(14, 103, 109, 20);
+		panelDeOpciones.add(comboBoxDestino);
+
+		JPanel panelDibujo = new JPanel();
+		panelDibujo.setBounds(180, 11, 800, 600);
+		frameGps.getContentPane().add(panelDibujo);
+
+		panelDibujo.add(DibujoCanvas.getInstancia());
+		crearVentana();
+	}
+
+	/**
+	 * Agrega el texto: "Punto Origen" al panel de opciones. 
+	 * @param panelDeOpciones
+	 */
+	private void agregarOrigen(JPanel panelDeOpciones) {
+		JTextPane txtpnPuntoSalida = new JTextPane();
+		txtpnPuntoSalida.setBounds(14, 5, 92, 20);
+		txtpnPuntoSalida.setText("Punto Origen");
+		txtpnPuntoSalida.setEditable(false);
+		panelDeOpciones.add(txtpnPuntoSalida);
+	}
+
+	/**
+	 * Agrega el boton Buscar al panel.
+	 * @param panelDeOpciones
+	 */
+	private void agregarBotonBuscar(JPanel panelDeOpciones) {
+		JButton btnBuscar = new JButton("Buscar");
+		btnBuscar.setBounds(41, 287, 65, 23);
+		panelDeOpciones.add(btnBuscar);
+		btnBuscar.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CalculoDistancia calculoDistancia = new CalculoDistancia();
+				ArrayList<Ruta> listaRuta = Mapa.getInstancia().getListaRuta();
+				// calculoDistancia.CalcularCamino(listaRuta, eleccionOrigen,
+				// eleccionDestino);
+				String eleccionOrigen = Vista.getInstancia().getEleccionOrigen();
+				String eleccionDestino = Vista.getInstancia().getEleccionDestino();
+				System.out.println("origen: " + eleccionOrigen + " destino: " + eleccionDestino);
+				calculoDistancia.calcularCamino(listaRuta, eleccionOrigen, eleccionDestino);
+			}
+		});
+	}
+/**
+ * Agrega el Panel de opciones al frame.
+ * @return panelDeOpciones
+ */
+	private JPanel agregarPanelOpciones() {
+		JPanel panelDeOpciones = new JPanel();
+		panelDeOpciones.setToolTipText("");
+		panelDeOpciones.setBounds(10, 11, 160, 363);
+		frameGps.getContentPane().add(panelDeOpciones);
+		panelDeOpciones.setLayout(null);
+		return panelDeOpciones;
+	}
+
+	@Override
+	public void addObservador(Observador obs) {
+		this.observador = obs;
+	}
+
+	@Override
+	public void removerObservador(Observador obs) {
+		this.observador = null;
+	}
+
+	@Override
+	public void notificar() {
+		this.observador.actualizar();
+
+	}
+
+	/**
+	 * Devuelve la elección de destino.
+	 * @return eleccionDestino
+	 */
+	public String getEleccionDestino() {
+		return eleccionDestino;
+	}
+
+	/**
+	 * Setea la eleccción de destino.
+	 * @param eleccionDestino
+	 */
+	public void setEleccionDestino(String eleccionDestino) {
+		this.eleccionDestino = eleccionDestino;
+	}
+
+	/**
+	 * Devuelve la elección de origen.
+	 * @return eleccionOrigen.
+	 */
+	public String getEleccionOrigen() {
+		return eleccionOrigen;
+	}
+
+	/**
+	 * Setea la elección de origen.
+	 * @param eleccionOrigen
+	 */
+	public void setEleccionOrigen(String eleccionOrigen) {
+		this.eleccionOrigen = eleccionOrigen;
+	}
+
+	public JFrame getFrameGps() {
+		return frameGps;
+	}
+
+	public void setFrameGps(JFrame frameGps) {
+		this.frameGps = frameGps;
+	}
+}
