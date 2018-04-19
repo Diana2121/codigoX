@@ -8,11 +8,9 @@ import java.util.ArrayList;
  */
 public abstract class Punto {
 	
-	private Punto puntoAntecesor=null;
 	private Posicion posicion;// Atributos comunes a las SubClases. Son equivalentes sem�nticamente los
 								// atributos posicion ~ ubicacion, tomaaremos posicion.
 	private String nombre;
-	private ArrayList<Punto> listaAdyacentes = new ArrayList<>();
 
 //	construcotr
 	public Punto(Posicion posicion, String nombre) {
@@ -36,12 +34,6 @@ public abstract class Punto {
 		this.posicion = posicion;
 	}
 
-	public Punto getPuntoAntecesor() {
-		return puntoAntecesor;
-	}
 
-	public void setPuntoAntecesor(Punto puntoAntecesor) {
-		this.puntoAntecesor = puntoAntecesor;
-	}
 
 }

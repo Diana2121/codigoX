@@ -41,8 +41,8 @@ public class Vista implements Observable {
 	JRadioButton radioBotonMasCorto = new JRadioButton("Más corto");
 	JRadioButton radioBotonMasRapido = new JRadioButton("Más rápido");
 	private Observador observador;
-	private String eleccionDestino;
-	private String eleccionOrigen;
+	private String eleccionDestino="5 de octubre";
+	private String eleccionOrigen="5 de octubre";
 
 	private static Vista instancia = new Vista();// Usamos Singleton.
 

@@ -2,11 +2,10 @@ package rutas;
 
 import java.util.ArrayList;
 
-import packGps.Camino;
 import packGps.Punto;
 import packGps.PuntoDeInteres;
 
-public abstract class Ruta extends Camino{
+public abstract class Ruta {
 	private int longitud;
 	private float velocidadMaxima;
 	private ArrayList<PuntoDeInteres> listPuntosDeInteres;

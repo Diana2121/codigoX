@@ -3,12 +3,17 @@ package util;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
 import grafica.Vista;
 import packGps.Mapa;
 import packGps.Punto;
+import rutas.Ruta;
+import rutas.RutaDeRipio;
+import rutas.RutaEnConstruccion;
+import rutas.RutaPavimentada;
 
 public class grafica {
 
@@ -25,14 +30,30 @@ public class grafica {
 	}
 
 	public static void dibujarRuta(Graphics g) {
-		for (int i= 0; i< Mapa.getInstancia().getListaRuta().size(); i++) {
-			Punto origen=Mapa.getInstancia().getListaRuta().get(i).getOrigen();
-			Punto destino=Mapa.getInstancia().getListaRuta().get(i).getDestino();
+		ArrayList<Ruta> listaDeRutas = Mapa.getInstancia().getListaRuta();
+		
+		for (int i= 0; i< listaDeRutas.size(); i++) {
+			
+			Punto origen= listaDeRutas.get(i).getOrigen();
+			Punto destino=listaDeRutas.get(i).getDestino();
 			
 			int x1=(int) origen.getPosicion().getLatitud();
-			int y1=		(int) origen.getPosicion().getLongitud();
+			int y1=	(int) origen.getPosicion().getLongitud();
 			int x2=(int) destino.getPosicion().getLatitud();
 			int y2=(int) destino.getPosicion().getLongitud();
+			
+			if (listaDeRutas.get(i) instanceof RutaPavimentada ){
+				g.setColor(Color.blue);
+			}
+			
+			if (listaDeRutas.get(i) instanceof RutaEnConstruccion){
+				Color marron = new Color(128, 64, 64);
+				g.setColor(marron);
+			}
+			
+			if (listaDeRutas.get(i) instanceof RutaDeRipio){
+				g.setColor(Color.green);
+			}
 			g.drawLine(x1,y1 ,x2 ,y2);
 		}
 	}
